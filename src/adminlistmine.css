@@ -1,0 +1,108 @@
+/* Gaya untuk container utama */
+.container {
+    padding: 20px;
+    background-color: #f4f4f9;
+    min-height: 100vh;
+}
+
+/* Judul utama */
+.title {
+    text-align: center;
+    font-size: 24px;
+    font-weight: bold;
+    color: #000;
+    margin-bottom: 20px;
+}
+
+/* Grid untuk tombol */
+.button-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 10px;
+    margin-bottom: 20px;
+}
+
+.btn {
+    padding: 10px 15px;
+    border: none;
+    color: white;
+    font-weight: bold;
+    border-radius: 5px;
+    cursor: pointer;
+    text-align: center;
+    transition: background 0.3s ease-in-out;
+}
+
+.blue {
+    background-color: #4F46E5;
+}
+
+.blue:hover {
+    background-color: #4338CA;
+}
+
+.green {
+    background-color: #10B981;
+}
+
+.green:hover {
+    background-color: #059669;
+}
+
+/* Header */
+.header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 20px;
+}
+
+h2 {
+    font-size: 22px;
+    font-weight: bold;
+    color: #333;
+}
+
+/* Tabel styling */
+.table-container {
+    background: white;
+    padding: 20px;
+    border-radius: 10px;
+    box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+th, td {
+    border: 1px solid #ddd;
+    padding: 10px;
+    text-align: center;
+}
+
+th {
+    background-color: #E5E7EB;
+    font-weight: bold;
+}
+
+tr:hover {
+    background-color: #F3F4F6;
+}
+
+/* Tombol dalam tabel */
+.btn.edit {
+    background-color: #2563EB;
+}
+
+.btn.edit:hover {
+    background-color: #1D4ED8;
+}
+
+/* Animasi loading */
+.loading {
+    text-align: center;
+    font-style: italic;
+    padding: 20px;
+}
