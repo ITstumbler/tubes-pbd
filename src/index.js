@@ -19,6 +19,10 @@ import AdminEditMineral from "./admin_edit_mineral.js";
 import AdminListEarnings from "./admin_list_earnings.js";
 import AdminAddEarnings from "./admin_add_earnings.js";
 import AdminEditEarnings from "./admin_edit_earnings.js";
+import AdminListOwnership from "./admin_list_ownership.js";
+import AdminAddOwnership from "./admin_add_ownership.js";
+import AdminEditOwnership from "./admin_edit_ownership.js";
+import PDFTest from "./pdf_test.js";
 
 const backendUrl = "http://localhost:8082";
 export { backendUrl };
@@ -44,6 +48,10 @@ root.render(
         <Route path="admin_list_earnings" element={ <AdminListEarnings />} />
         <Route path="admin_add_earnings" element={ <AdminAddEarnings />} />
         <Route path="admin_edit_earnings" element={ <AdminEditEarnings />} />
+        <Route path="admin_list_ownership" element={ <AdminListOwnership />} />
+        <Route path="admin_add_ownership" element={ <AdminAddOwnership />} />
+        <Route path="admin_edit_ownership" element={ <AdminEditOwnership />} />
+        <Route path="pdf_test" element={ <PDFTest />} />
         <Route path="*" element={ <AdminHomepage />} />
       </Route>
     </Routes>

@@ -3,45 +3,43 @@ import { useLocation, useNavigate } from "react-router-dom";
 import { backendUrl } from "./index.js";
 import "./Loginpage.css";
 
-function AdminEditEarnings() {
+function AdminEditOwnership() {
     const location = useLocation();
-    const [earningsData, setEarningsData] = useState({id_tambang: "", id_mineral: "", tanggal: "", jumlah_penghasilan_kg: ""});
+    const [ownershipData, setOwnershipData] = useState({id_alat: "", id_pekerja: ""});
     //error 0 means use default error messages for password mismatch and passwords being under 6 characters long.
     //error 1 or 2 uses the message set in customStatusMessage. 1 displays red text and 2 displays green text.
     const [customStatusMessage, setCustomStatusMessage] = useState({message: "", error: 0});
-    const [mineList, setMineList] = useState([{nama: "Memuat data...", id_tambang: "-1"}]);
-    const [mineralList, setMineralList] = useState([{nama: "Memuat data...", id_mineral: "-1"}]);
+    const [toolList, setToolList] = useState([{nama_alat: "Memuat data...", id_alat: "-1"}]);
+    const [workerList, setWorkerList] = useState([{nama: "Memuat data...", id_pekerja: "-1"}]);
 
     const navigate = useNavigate();
 
     useEffect(() => {
-        if(!location.state.id_penghasilan) navigate("/admin_earnings_list", {state: {}});
-        fetch(backendUrl + `/viewentry?table=5&id=`+location.state.id_penghasilan)
+        if(!location.state.id_kepemilikan) navigate("/admin_ownership_list", {state: {}});
+        fetch(backendUrl + `/viewentry?table=9&id=`+location.state.id_kepemilikan)
         .then(res => res.json())
-        .then(jsondata => {setEarningsData(jsondata)});
-        fetch(backendUrl + "/viewtable?table=6")
+        .then(jsondata => {setOwnershipData(jsondata)});
+        fetch(backendUrl + "/viewtable?table=10")
         .then(res => res.json())
-        .then(mineData => setMineList(mineData));
-        fetch(backendUrl + "/viewtable?table=8")
+        .then(toolData => setToolList(toolData));
+        fetch(backendUrl + "/viewtable?table=7")
         .then(res => res.json())
-        .then(mineralData => setMineralList(mineralData));
+        .then(workerData => setWorkerList(workerData));
     }, [location, navigate]);
 
     let errorMessage = " ";
     let errorMessageClass = "statusmessagered";
 
-    const updateEarningsData = (event) => {
+    const updateOwnershipData = (event) => {
         const name = event.target.name;
         const value = event.target.value;
-        setEarningsData(values => ({...values, [name]: value}));
+        setOwnershipData(values => ({...values, [name]: value}));
         customStatusMessage.error = 0
     };
     
     if(customStatusMessage.error === 0) {
-        if((isNaN(+earningsData.jumlah_penghasilan_kg) && earningsData.jumlah_penghasilan_kg)) {
-            errorMessage = "Jumlah penghasilan (kg) harus berupa angka";
-            errorMessageClass = "statusmessagered";
-        }
+        errorMessage = "";
+        errorMessageClass = "statusmessagered";
     }
 
     else if(customStatusMessage.error === 1) {
@@ -53,25 +51,20 @@ function AdminEditEarnings() {
         errorMessageClass = "statusmessagegreen";
     }
 
-    const submitEditedEarningsData = (e) => {
+    const submitEditedOwnershipData = (e) => {
         e.preventDefault();
-        if(earningsData.id_tambang === undefined
-            || earningsData.id_mineral  === undefined
-            || earningsData.tanggal  === undefined
-            || earningsData.jumlah_penghasilan_kg  === undefined) {
+        if(ownershipData.id_alat === undefined
+            || ownershipData.id_pekerja  === undefined) {
             setCustomStatusMessage({message: "Mohon mengisi semua kolom", error: 1});
-        }
-        else if((isNaN(+earningsData.jumlah_penghasilan_kg) && earningsData.jumlah_penghasilan_kg)) {
-            setCustomStatusMessage({message: "Jumlah penghasilan (kg) harus berupa angka", error: 1});
         }
         else {
             const payload = {
                 method: "POST",
                 headers: {"Content-Type": "application/json"},
-                body: JSON.stringify(earningsData),
+                body: JSON.stringify(ownershipData),
                 mode: "cors"
             }
-            fetch(backendUrl + "/editearningsdata?id="+location.state.id_penghasilan, payload)
+            fetch(backendUrl + "/editownershipdata?id="+location.state.id_kepemilikan, payload)
             .then(res => res.json())
             .then(postResponse => setCustomStatusMessage({message: postResponse.msg, error: postResponse.success}));
         }
@@ -82,56 +75,46 @@ function AdminEditEarnings() {
         navigate("/admin_homepage", {state: {}})
     }
 
-    const goToEarningsList = (e) => {
+    const goToOwnershipList = (e) => {
         e.preventDefault();
-        navigate("/admin_list_earnings", {state: {}})
+        navigate("/admin_list_ownership", {state: {}})
     }
 
     return(
         <>
-        <div className="headertext">EDIT DATA PENGHASILAN
+        <div className="headertext">EDIT DATA KEPEMILIKAN ALAT
             <button className="toprightnavbutton" onClick={goToHome} >MENU UTAMA</button>
-            <button className="topleftnavbutton" onClick={goToEarningsList} >DATA PENGHAS.</button>
+            <button className="topleftnavbutton" onClick={goToOwnershipList} >KEPEM. ALAT</button>
         </div>
         <div className="secondarytext"></div>
         <br></br>
-        <form onSubmit={submitEditedEarningsData}>
+        <form onSubmit={submitEditedOwnershipData}>
             <table className="submitkittable">
-                <tr>
-                    <td>TEMPAT MENAMBANG</td>
+            <tr>
+                    <td>(ID) TIPE ALAT</td>
                     <td>
-                        <select name="id_tambang" className="submitkitinput"
-                        value={earningsData.id_tambang} onChange={(e) => updateEarningsData(e)}>
-                            {mineList.map((mineEntry) => {
+                        <select name="id_alat" className="submitkitinput"
+                        value={ownershipData.id_alat} onChange={(e) => updateOwnershipData(e)}>
+                            {toolList.map((toolEntry) => {
                                 return(
-                                    <option value={mineEntry.id_tambang}>{mineEntry.nama}</option>
+                                    <option value={toolEntry.id_alat}>{toolEntry.nama_alat}</option>
                                 )
                             })}
                         </select>
                     </td>
                 </tr>
                 <tr>
-                    <td>MINERAL YANG DIDAPATKAN</td>
+                    <td>PEKERJA</td>
                     <td>
-                        <select name="id_mineral" className="submitkitinput"
-                        value={earningsData.id_mineral} onChange={(e) => updateEarningsData(e)}>
-                            {mineralList.map((mineralEntry) => {
+                        <select name="id_pekerja" className="submitkitinput"
+                        value={ownershipData.id_pekerja} onChange={(e) => updateOwnershipData(e)}>
+                            {workerList.map((workerEntry) => {
                                 return(
-                                    <option value={mineralEntry.id_mineral}>{mineralEntry.nama}</option>
+                                    <option value={workerEntry.id_pekerja}>{workerEntry.nama}</option>
                                 )
                             })}
                         </select>
                     </td>
-                </tr>
-                <tr>
-                    <td>TANGGAL DITERIMA</td>
-                    <td><input className="submitkitinput" type="date" name="tanggal"
-                    value={earningsData.tanggal} onChange={(e) => updateEarningsData(e)} /></td>
-                </tr>
-                <tr>
-                    <td>JUMLAH PENGHASILAN</td>
-                    <td><input className="submitkitinputprice" type="text" name="jumlah_penghasilan_kg"
-                    value={earningsData.jumlah_penghasilan_kg} onChange={(e) => updateEarningsData(e)} /> KG</td>
                 </tr>
                 <tr>
                     <td colspan="2">
@@ -145,4 +128,4 @@ function AdminEditEarnings() {
     );
 }
 
-export default AdminEditEarnings;
+export default AdminEditOwnership;

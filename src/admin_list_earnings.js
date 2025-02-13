@@ -8,7 +8,7 @@ function AdminListEarnings() {
     //console.log(location);
 
     const [tableData, setTableData] = useState([{id_penghasilan: "Memuat...", nama_tambang: "Memuat data...", nama_mineral: "Memuat data...", tanggal: "Memuat data...", jumlah_penghasilan_kg: "Memuat data..."}]);
-    const [customStatusMessage, setCustomStatusMessage] = useState({message: "", error: 0});
+    const [customStatusMessage, setCustomStatusMessage] = useState({message: "", error: 0, id_penghasilan: -1});
 
     useEffect(() => {
         fetch(backendUrl + `/viewtable?table=5`)
@@ -39,6 +39,10 @@ function AdminListEarnings() {
     }
 
     const deleteData = (e) => {
+        if(customStatusMessage.id_penghasilan !== e.target.name) {
+            setCustomStatusMessage({message: "Yakin? Tekan tombol lagi untuk lanjut dengan penghapusan data", error: 1, id_penghasilan: e.target.name});
+            return;
+        }
         const payload = {
             method: "POST",
             headers: {"Content-Type": "application/json"},
@@ -47,7 +51,7 @@ function AdminListEarnings() {
         }
         fetch(backendUrl + "/deleteearningsdata", payload)
         .then(res => res.json())
-        .then(postResponse => setCustomStatusMessage({message: postResponse.msg, error: postResponse.success}));
+        .then(postResponse => setCustomStatusMessage({message: postResponse.msg, error: postResponse.success, id_penghasilan: -1}));
     }
 
     const navigate = useNavigate();
@@ -101,7 +105,7 @@ function AdminListEarnings() {
                             className="changedatabutton"
                             name={data.id_penghasilan}
                             onClick={(e) => {deleteData(e)}}
-                            >HAPUS DATA</button></td>
+                            >{parseInt(customStatusMessage.id_penghasilan) === parseInt(data.id_penghasilan) ? "YAKIN, HAPUS" : "HAPUS DATA"}</button></td>
                         </tr>
                     )
                 })}
