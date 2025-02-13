@@ -1,77 +1,93 @@
-import { React, useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 import { Outlet, useNavigate } from "react-router-dom";
 import { backendUrl } from "./index.js";
-import './Loginpage.css';
+import "./adminlistmine.css";
 
 function AdminListMine() {
-    // const location = useLocation();
-    //console.log(location);
+    const [tableData, setTableData] = useState([]);
+    const navigate = useNavigate();
 
-    const [tableData, setTableData] = useState([{id_tambang: "Memuat...", nama: "Memuat data...", tanggal_dibuka: "Memuat data...", lokasi: "Memuat data...", status: "Memuat data..."}]);
+    const menuItems = [
+        { label: "Data Tambang", path: "/admin_list_mine" },
+        { label: "Data Pekerja", path: "/admin_list_worker" },
+        { label: "Data Alat", path: "/admin_list_tool" },
+        { label: "Data Mineral", path: "/admin_list_mineral" },
+        { label: "Data Penghasilan", path: "/admin_list_earnings" },
+        { label: "Kepemilikan Alat", path: "/admin_list_ownership" },
+    ];
 
     useEffect(() => {
         fetch(backendUrl + `/viewtable?table=1`)
-        .then(res => res.json())
-        .then(jsondata => {setTableData(jsondata)});
-    });
-    
-    const changeData = (e) => {
-        const mine_id = e.target.name;
-        navigate("/admin_edit_mine", {state: {id_tambang: mine_id}})
-    }
+            .then(res => res.json())
+            .then(jsondata => setTableData(jsondata))
+            .catch(error => console.error("Error fetching data:", error));
+    }, []);
 
-    const navigate = useNavigate();
+    const changeData = (id_tambang) => {
+        navigate("/admin_edit_mine", { state: { id_tambang } });
+    };
 
-    const goToHome = (e) => {
-        e.preventDefault();
-        navigate("/admin_homepage", {state: {}})
-    }
+    const goToHome = () => navigate("/admin_homepage");
+    const goToAddMineData = () => navigate("/admin_add_mine");
 
-    const goToAddMineData = (e) => {
-        e.preventDefault();
-        navigate("/admin_add_mine", {state: {}})
-    }
+    return (
+        <div className="container">
+            <h1 className="title">Admin Dashboard</h1>
+            <div className="button-grid">
+                <button className="btn blue">Data Tambang</button>
+                <button className="btn blue">Data Pekerja</button>
+                <button className="btn blue">Data Alat</button>
+                <button className="btn blue">Data Mineral</button>
+                <button className="btn blue">Data Penghasilan</button>
+                <button className="btn blue">Kepemilikan Alat</button>
+            </div>
 
-    return(
-        <>
-        
-        <div className="headertext">DATA TAMBANG
-            <button className="toprightnavbutton" onClick={goToHome} >MENU UTAMA</button>
-            <button className="topleftnavbutton" onClick={goToAddMineData} >TAMBAH TAMBANG</button>
-        </div>
-        <br></br>
-        <table className="kitstable">
-            <thead>
-                <tr>
-                    <th>ID tambang</th>
-                    <th>Nama tambang</th>
-                    <th>Tanggal dibuka</th>
-                    <th>Lokasi</th>
-                    <th>Status</th>
-                    <th></th>
-                </tr>
-            </thead>
-            <tbody>
-                {tableData.map((data) => {
-                    return(
+            <div className="header">
+                <h2>Data Tambang</h2>
+                <div className="button-group">
+                    <button onClick={goToHome} className="btn green">Menu Utama</button>
+                    <button onClick={goToAddMineData} className="btn green">Tambah Tambang</button>
+                </div>
+            </div>
+            
+            <div className="table-container">
+                <table>
+                    <thead>
                         <tr>
-                            <td>{data.id_tambang}</td>
-                            <td>{data.nama}</td>
-                            <td>{data.tanggal_dibuka.substring(0, 10)}</td>
-                            <td>{data.lokasi}</td>
-                            <td>{data.status}</td>
-                            <td><button
-                            className="changedatabutton"
-                            name={data.id_tambang}
-                            onClick={(e) => {changeData(e)}}
-                            >UBAH DATA</button></td>
+                            <th>ID Tambang</th>
+                            <th>Nama Tambang</th>
+                            <th>Tanggal Dibuka</th>
+                            <th>Lokasi</th>
+                            <th>Status</th>
+                            <th>Aksi</th>
                         </tr>
-                    )
-                })}
-            </tbody>
-        </table>
-        <Outlet />
-        </>
+                    </thead>
+                    <tbody>
+                        {tableData.length > 0 ? (
+                            tableData.map((data) => (
+                                <tr key={data.id_tambang}>
+                                    <td>{data.id_tambang}</td>
+                                    <td>{data.nama}</td>
+                                    <td>{data.tanggal_dibuka.substring(0, 10)}</td>
+                                    <td>{data.lokasi}</td>
+                                    <td>{data.status}</td>
+                                    <td>
+                                        <button className="btn edit" onClick={() => changeData(data.id_tambang)}>
+                                            Ubah Data
+                                        </button>
+                                    </td>
+                                </tr>
+                            ))
+                        ) : (
+                            <tr>
+                                <td colSpan="6" className="loading">Memuat data...</td>
+                            </tr>
+                        )}
+                    </tbody>
+                </table>
+            </div>
+            <Outlet />
+        </div>
     );
 }
 

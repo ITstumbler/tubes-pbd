@@ -1,0 +1,38 @@
+/* AdminListMineral.css */
+.container {
+    padding: 20px;
+    background-color: #f4f4f4;
+}
+
+.headertext {
+    text-align: center;
+    font-size: 24px;
+    font-weight: bold;
+}
+
+.kitstable {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 20px;
+}
+
+.kitstable th {
+    background-color: #ddd;
+    font-weight: bold;
+    padding: 10px;
+    text-align: left;
+}
+
+.kitstable td {
+    padding: 10px;
+    background-color: #fff;
+}
+
+.changedatabutton {
+    background-color: #007bff;
+    color: white;
+    padding: 5px 10px;
+    border: none;
+    cursor: pointer;
+    border-radius: 5px;
+}

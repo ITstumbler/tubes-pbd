@@ -1,7 +1,7 @@
 import { React, useEffect, useState } from "react";
 import { Outlet, useNavigate } from "react-router-dom";
 import { backendUrl } from "./index.js";
-import './Loginpage.css';
+import './adminlistworker.css';
 
 function AdminListWorker() {
     // const location = useLocation();
