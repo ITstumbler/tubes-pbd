@@ -33,6 +33,11 @@ function AdminHomepage() {
         navigate("/admin_list_earnings", {state: {}})
     }
 
+    const goToListOwnership = (e) => {
+        e.preventDefault();
+        navigate("/admin_list_ownership", {state: {}})
+    }
+
     return(
         <>
         
@@ -48,8 +53,9 @@ function AdminHomepage() {
                     <td colSpan="2"><button className="navigationbutton" onClick={goToListTool} >Data Alat</button></td>
                 </tr>
                 <tr>
-                    <td colSpan="3"><button className="navigationbutton" onClick={goToListMineral} >Data Mineral</button></td>
-                    <td colSpan="3"><button className="navigationbutton" onClick={goToListEarnings} >Data Penghasilan</button></td>
+                    <td colSpan="2"><button className="navigationbutton" onClick={goToListMineral} >Data Mineral</button></td>
+                    <td colSpan="2"><button className="navigationbutton" onClick={goToListEarnings} >Data Penghasilan</button></td>
+                    <td colSpan="2"><button className="navigationbutton" onClick={goToListOwnership} >Kepemilikan Alat</button></td>
                 </tr>
             </thead>
         </table>
