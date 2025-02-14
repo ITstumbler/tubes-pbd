@@ -65,13 +65,16 @@ app.get('/viewtable', (req, res) => {
         sqlQueryToUse = "SELECT pekerja.id_pekerja, pekerja.nama, pekerja.status, pekerja.tanggal_diterima, tambang.nama nama_tambang FROM pekerja INNER JOIN tambang ON tambang.id_tambang = pekerja.tambang ORDER BY status DESC LIMIT 200;";
     }
     else if(tableToView == 3) {
-        sqlQueryToUse = "SELECT alat.id_alat, alat.tipe, alat.status, alat.tanggal_dibeli, alat.harga, pekerja.nama FROM alat INNER JOIN pekerja ON pekerja.id_pekerja = alat.dimiliki ORDER BY status DESC LIMIT 200;";
+        sqlQueryToUse = "SELECT alat.id_alat, alat.tipe, alat.status, alat.tanggal_dibeli, alat.harga FROM alat ORDER BY status DESC LIMIT 200;";
     }
     else if(tableToView == 4) {
         sqlQueryToUse = "SELECT * FROM mineral ORDER BY nama ASC LIMIT 200";
     }
     else if(tableToView == 5) {
         sqlQueryToUse = "SELECT penghasilan_tambang.id_penghasilan, penghasilan_tambang.tanggal, penghasilan_tambang.jumlah_penghasilan_kg, tambang.nama nama_tambang, mineral.nama nama_mineral FROM penghasilan_tambang INNER JOIN tambang ON tambang.id_tambang = penghasilan_tambang.id_tambang INNER JOIN mineral ON mineral.id_mineral = penghasilan_tambang.id_mineral ORDER BY tanggal DESC LIMIT 200";
+    }
+    else if(tableToView == 9) {
+        sqlQueryToUse = "SELECT kepemilikan.id_kepemilikan, kepemilikan.id_alat, alat.tipe, pekerja.nama FROM kepemilikan INNER JOIN alat ON kepemilikan.id_alat = alat.id_alat INNER JOIN pekerja ON kepemilikan.id_pekerja = pekerja.id_pekerja ORDER BY id_kepemilikan ASC LIMIT 200";
     }
 
     //Dropdown selections
@@ -83,6 +86,14 @@ app.get('/viewtable', (req, res) => {
     }
     else if(tableToView == 8) {
         sqlQueryToUse = "SELECT id_mineral, nama FROM mineral ORDER BY nama ASC LIMIT 200";
+    }
+    else if(tableToView == 10) {
+        sqlQueryToUse = "SELECT id_alat, CONCAT('(', id_alat, '): ', tipe) nama_alat FROM alat ORDER BY id_alat ASC LIMIT 200";
+    }
+
+    //Charts
+    else if(tableToView == 11) {
+        sqlQueryToUse = "SELECT p.nama AS nama_pekerja, t.nama AS nama_tambang, SUM(pt.jumlah_penghasilan_kg * m.harga_kg) AS total_penghasilan FROM pekerja p JOIN tambang t ON p.tambang = t.id_tambang JOIN penghasilan_tambang pt ON t.id_tambang = pt.id_tambang JOIN mineral m ON pt.id_mineral = m.id_mineral GROUP BY p.id_pekerja, p.nama, t.nama ORDER BY total_penghasilan DESC LIMIT 200";
     }
 
 
@@ -115,6 +126,9 @@ app.get('/viewentry', (req, res) => {
     }
     else if(tableToView == 5) {
         sqlQueryToUse = "SELECT * FROM penghasilan_tambang WHERE id_penghasilan = " + req.query.id;
+    }
+    else if(tableToView == 9) {
+        sqlQueryToUse = "SELECT * FROM kepemilikan WHERE id_kepemilikan = " + req.query.id;
     }
     
 
@@ -238,9 +252,8 @@ app.post('/addtooldata', (req, res) => {
     const harga = req.body.harga;
     const tanggal_dibeli = req.body.tanggal_dibeli;
     const status = req.body.status;
-    const dimiliki = req.body.dimiliki;
 
-    let sqlQueryToUse = "INSERT INTO alat (tipe, harga, tanggal_dibeli, status, dimiliki) VALUES ('"+ tipe +"', " + harga + ", '" + tanggal_dibeli + "', '" + status + "', '" + dimiliki + "')";
+    let sqlQueryToUse = "INSERT INTO alat (tipe, harga, tanggal_dibeli, status) VALUES ('"+ tipe +"', " + harga + ", '" + tanggal_dibeli + "', '" + status + "')";
     con.query(sqlQueryToUse, (err, rows) => {
         if (err) {
             console.log(err);
@@ -258,9 +271,8 @@ app.post('/edittooldata', (req, res) => {
     const harga = req.body.harga;
     const tanggal_dibeli = req.body.tanggal_dibeli;
     const status = req.body.status;
-    const dimiliki = req.body.dimiliki;
 
-    let sqlQueryToUse = "UPDATE alat SET tipe = '"+ tipe +"', harga = " + harga + ", tanggal_dibeli = '" + tanggal_dibeli + "', status = '" + status + "', dimiliki = '" + dimiliki + "' WHERE id_alat = " + req.query.id + "";
+    let sqlQueryToUse = "UPDATE alat SET tipe = '"+ tipe +"', harga = " + harga + ", tanggal_dibeli = '" + tanggal_dibeli + "', status = '" + status + "' WHERE id_alat = " + req.query.id + "";
     con.query(sqlQueryToUse, (err, rows) => {
         if (err) {
             console.log(err);
@@ -378,6 +390,79 @@ app.post('/deleteearningsdata', (req, res) => {
         else if(rowThatMatchesWithEarningsId == -1) {
             res.status(400).json({
                 msg: "Tidak ditemukan penghasilan dengan ID tersebut.",
+                success: 1
+            });
+        }
+    });
+});
+
+app.post('/addownershipdata', (req, res) => {
+
+    const id_alat = req.body.id_alat;
+    const id_pekerja = req.body.id_pekerja;
+
+    let sqlQueryToUse = "INSERT INTO kepemilikan (id_alat, id_pekerja) VALUES ("+ id_alat + ", " + id_pekerja + ")";
+    con.query(sqlQueryToUse, (err, rows) => {
+        if (err) {
+            console.log(err);
+            res.status(400).json({ msg: "Gagal. Error tidak diketahui.", success: 1 });
+        }
+        else {
+            res.status(200).json({ msg: "Data kepemilikan telah disimpan.", success: 2 });
+        }
+    });
+});
+
+app.post('/editownershipdata', (req, res) => {
+    
+    const id_kepemilikan = req.body.id_kepemilikan;
+    const id_alat = req.body.id_alat;
+    const id_pekerja = req.body.id_pekerja;
+
+    let sqlQueryToUse = "UPDATE kepemilikan SET id_kepemilikan = "+ id_kepemilikan +", id_alat = " + id_alat + ", id_pekerja = " + id_pekerja + " WHERE id_kepemilikan = " + req.query.id + "";
+    con.query(sqlQueryToUse, (err, rows) => {
+        if (err) {
+            console.log(err);
+            res.status(400).json({ msg: "Gagal. Error tidak diketahui.", success: 1 });
+        }
+        else {
+            res.status(200).json({ msg: "Data kepemilikan telah diedit.", success: 2 });
+        }
+    });
+});
+
+app.post('/deleteownershipdata', (req, res) => {
+    const ownershipIdToDelete = req.body.ownershipId;
+    let rowThatMatchesWithOwnershipId = -1;
+    const sqlQuerySelect = "SELECT * FROM kepemilikan";
+    con.query(sqlQuerySelect, (err, rows) => {
+        for(i in rows) {
+            if(ownershipIdToDelete == rows[i].id_kepemilikan) {
+                console.log("Kepemilikan cocok ditemukan");
+                rowThatMatchesWithOwnershipId = i;
+                break;
+            }
+        }
+        if(rowThatMatchesWithOwnershipId == -1) {
+            console.log("Tidak ada kepemilikan yang ditemukan dengan id tersebut!");
+        }
+        else {
+            const sqlQueryDelete = "DELETE FROM kepemilikan WHERE id_kepemilikan = " + ownershipIdToDelete;
+            con.query(sqlQueryDelete);
+            res.status(200).json({
+                msg: "Data kepemilikan sukses dihapuskan.",
+                success: 2
+            });
+        }
+        if (err) {
+            res.status(500).json({
+                msg: "Error tidak diketahui.",
+                success: 1
+            });
+        }
+        else if(rowThatMatchesWithOwnershipId == -1) {
+            res.status(400).json({
+                msg: "Tidak ditemukan kepemilikan dengan ID tersebut.",
                 success: 1
             });
         }

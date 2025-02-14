@@ -1,9 +1,12 @@
-import React from "react";
+import { React, useEffect, useState } from "react";
 import { Outlet, useNavigate } from "react-router-dom";
 import { BarChart, Bar, XAxis, YAxis, Tooltip, ResponsiveContainer } from "recharts";
+import { backendUrl } from "./index.js";
 
 function AdminHomepage() {
     const navigate = useNavigate();
+
+    const [chartData, setChartData] = useState([{nama_pekerja: "Memuat...", total_penghasilan: 1000000}]);
 
     const menuItems = [
         { label: "Data Tambang", path: "/admin_list_mine" },
@@ -14,13 +17,11 @@ function AdminHomepage() {
         { label: "Kepemilikan Alat", path: "/admin_list_ownership" },
     ];
 
-    const earningsData = [
-        { month: "Jan", earnings: 5000 },
-        { month: "Feb", earnings: 7000 },
-        { month: "Mar", earnings: 6500 },
-        { month: "Apr", earnings: 8000 },
-        { month: "Mei", earnings: 7500 },
-    ];
+    useEffect(() => {
+        fetch(backendUrl + `/viewtable?table=11`)
+        .then(res => res.json())
+        .then(jsondata => {setChartData(jsondata)});
+    });
 
     return (
         <div style={{ padding: "20px", backgroundColor: "#f3f4f6", minHeight: "100vh" }}>
@@ -53,11 +54,11 @@ function AdminHomepage() {
             <div style={{ backgroundColor: "white", padding: "20px", borderRadius: "8px", boxShadow: "0 2px 10px rgba(0, 0, 0, 0.1)" }}>
                 <h2 style={{ fontSize: "20px", marginBottom: "10px" }}>Pendapatan Bulanan</h2>
                 <ResponsiveContainer width="100%" height={300}>
-                    <BarChart data={earningsData}>
-                        <XAxis dataKey="month" stroke="#8884d8" />
+                    <BarChart data={chartData}>
+                        <XAxis dataKey="nama_pekerja" stroke="#8884d8" />
                         <YAxis stroke="#8884d8" />
                         <Tooltip />
-                        <Bar dataKey="earnings" fill="#4f46e5" barSize={30} />
+                        <Bar dataKey="total_penghasilan" fill="#4f46e5" barSize={30} />
                     </BarChart>
                 </ResponsiveContainer>
             </div>

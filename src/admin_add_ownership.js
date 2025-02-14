@@ -5,7 +5,7 @@ import "./Loginpage.css";
 
 function AdminAddOwnership() {
     // const location = useLocation();
-    const [ownershipData, setOwnershipData] = useState({id_alat: "", id_pekerja: ""});
+    const [ownershipData, setOwnershipData] = useState({id_alat: "1", id_pekerja: "1"});
     //error 0 means use default error messages for password mismatch and passwords being under 6 characters long.
     //error 1 or 2 uses the message set in customStatusMessage. 1 displays red text and 2 displays green text.
     const [customStatusMessage, setCustomStatusMessage] = useState({message: "", error: 0});

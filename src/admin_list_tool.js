@@ -48,7 +48,6 @@ function AdminListTool() {
                     <th>Tanggal dibeli</th>
                     <th>Harga</th>
                     <th>Status</th>
-                    <th>Dimiliki oleh</th>
                     <th></th>
                 </tr>
             </thead>
@@ -61,7 +60,6 @@ function AdminListTool() {
                             <td>{data.tanggal_dibeli.substring(0, 10)}</td>
                             <td>Rp {data.harga.toLocaleString("en")}</td>
                             <td>{data.status}</td>
-                            <td>{data.nama}</td>
                             <td><button
                             className="changedatabutton"
                             name={data.id_alat}

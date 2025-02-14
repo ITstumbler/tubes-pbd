@@ -1,9 +1,5 @@
-import { React, useEffect } from "react";
-import { Outlet } from "react-router-dom";
 import html2canvas from "html2canvas";
 import { jsPDF } from "jspdf";
-
-import './Loginpage.css';
 
 export const generatePDF = async (elementToPrintId: string) => {
   const element = document.getElementById(elementToPrintId);
@@ -24,21 +20,3 @@ export const generatePDF = async (elementToPrintId: string) => {
   pdf.addImage(data, "PNG", 0, 0, pdfWidth, pdfHeight);
   pdf.save("print.pdf");
 };
-
-function PDFTest() {
-    // const location = useLocation();
-    //console.log(location);
-
-  useEffect(() => {
-    
-  });
-
-    return(
-        <>
-        
-        <Outlet />
-        </>
-    );
-}
-
-export default PDFTest;

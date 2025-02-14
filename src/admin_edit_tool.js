@@ -9,7 +9,6 @@ function AdminEditTool() {
     //error 0 means use default error messages for password mismatch and passwords being under 6 characters long.
     //error 1 or 2 uses the message set in customStatusMessage. 1 displays red text and 2 displays green text.
     const [customStatusMessage, setCustomStatusMessage] = useState({message: "", error: 0});
-    const [workerList, setWorkerList] = useState([{nama: "Memuat data...", id_pekerja: "-1"}]);
 
     const navigate = useNavigate();
 
@@ -18,9 +17,6 @@ function AdminEditTool() {
         fetch(backendUrl + `/viewentry?table=3&id=`+location.state.id_alat)
         .then(res => res.json())
         .then(jsondata => {setToolData(jsondata)});
-        fetch(backendUrl + "/viewtable?table=7")
-        .then(res => res.json())
-        .then(workerData => setWorkerList(workerData));
     }, [location, navigate]);
 
     let errorMessage = " ";
@@ -54,8 +50,7 @@ function AdminEditTool() {
         if(toolData.tipe === undefined
             || toolData.harga  === undefined
             || toolData.tanggal_dibeli  === undefined
-            || toolData.status  === undefined
-            || toolData.dimiliki  === undefined) {
+            || toolData.status  === undefined) {
             setCustomStatusMessage({message: "Mohon mengisi semua kolom", error: 1});
         }
         else if((isNaN(+toolData.harga) && toolData.harga)) {
@@ -110,19 +105,6 @@ function AdminEditTool() {
                     <td>TANGGAL DIBELI</td>
                     <td><input className="submitkitinput" type="date" name="tanggal_dibeli"
                     value={toolData.tanggal_dibeli} onChange={(e) => updateToolData(e)} /></td>
-                </tr>
-                <tr>
-                    <td>DIMILIKI oleh</td>
-                    <td>
-                        <select name="dimiliki" className="submitkitinput"
-                        value={toolData.dimiliki} onChange={(e) => updateToolData(e)}>
-                            {workerList.map((workerEntry) => {
-                                return(
-                                    <option value={workerEntry.id_pekerja}>{workerEntry.nama}</option>
-                                )
-                            })}
-                        </select>
-                    </td>
                 </tr>
                 <tr>
                     <td>STATUS</td>
