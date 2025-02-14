@@ -1,4 +1,4 @@
-@font-face {
+/* @font-face {
     font-family:"TF2 Build";
     src:url(tf2build.8181851a.woff2)
     format("woff2"),
@@ -12,8 +12,8 @@
     format("woff2"),
     url(tf2secondary.9f3541ce.woff)
     format("woff");
-    font-display:swap
-}
+    font-display:swap */
+/* }
 a {
     text-decoration: none;
 }
@@ -199,12 +199,12 @@ body {
     margin: auto;
     /* border-radius: 16px;
     border: 2px solid #eeebca; */
-    background-color: #292526;
+    /* background-color: #292526;
     border-spacing: 0;
-    border-collapse: separate;
+    border-collapse: separate; */
     
-}
-.fixedheaders {
+/* /} */
+/* .fixedheaders {
     position: fixed;
 }
 
@@ -556,4 +556,4 @@ body {
 .orderCount {
     width: 48px;
     display: inline;
-}
+} */ 

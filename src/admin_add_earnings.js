@@ -1,7 +1,7 @@
 import { React, useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { backendUrl } from "./index.js";
-import "./Loginpage.css";
+import "./adminaddearnings.css";
 
 function AdminAddEarnings() {
     // const location = useLocation();
