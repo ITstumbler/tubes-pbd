@@ -7,14 +7,14 @@ function AdminListMine() {
     const [tableData, setTableData] = useState([]);
     const navigate = useNavigate();
 
-    const menuItems = [
-        { label: "Data Tambang", path: "/admin_list_mine" },
-        { label: "Data Pekerja", path: "/admin_list_worker" },
-        { label: "Data Alat", path: "/admin_list_tool" },
-        { label: "Data Mineral", path: "/admin_list_mineral" },
-        { label: "Data Penghasilan", path: "/admin_list_earnings" },
-        { label: "Kepemilikan Alat", path: "/admin_list_ownership" },
-    ];
+    // const menuItems = [
+    //     { label: "Data Tambang", path: "/admin_list_mine" },
+    //     { label: "Data Pekerja", path: "/admin_list_worker" },
+    //     { label: "Data Alat", path: "/admin_list_tool" },
+    //     { label: "Data Mineral", path: "/admin_list_mineral" },
+    //     { label: "Data Penghasilan", path: "/admin_list_earnings" },
+    //     { label: "Kepemilikan Alat", path: "/admin_list_ownership" },
+    // ];
 
     useEffect(() => {
         fetch(backendUrl + `/viewtable?table=1`)
@@ -33,14 +33,6 @@ function AdminListMine() {
     return (
         <div className="container">
             <h1 className="title">Admin Dashboard</h1>
-            <div className="button-grid">
-                <button className="btn blue">Data Tambang</button>
-                <button className="btn blue">Data Pekerja</button>
-                <button className="btn blue">Data Alat</button>
-                <button className="btn blue">Data Mineral</button>
-                <button className="btn blue">Data Penghasilan</button>
-                <button className="btn blue">Kepemilikan Alat</button>
-            </div>
 
             <div className="header">
                 <h2>Data Tambang</h2>
