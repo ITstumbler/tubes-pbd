@@ -35,6 +35,44 @@ function AdminListEarnings() {
         });
     }, []);
 
+    let errorMessage = " ";
+    let errorMessageClass = "statusmessagered";
+
+    if(customStatusMessage.error === 0) {
+        errorMessage = "";
+        errorMessageClass = "statusmessagered";
+    }
+
+    else if(customStatusMessage.error === 1) {
+        errorMessage = customStatusMessage.message;
+        errorMessageClass = "statusmessagered";
+    }
+    else {
+        errorMessage = customStatusMessage.message;
+        errorMessageClass = "statusmessagegreen";
+    }
+
+    const changeData = (e) => {
+        const earnings_id = e.target.name;
+        navigate("/admin_edit_earnings", {state: {id_penghasilan: earnings_id}})
+    }
+
+    const deleteData = (e) => {
+        if(customStatusMessage.id_penghasilan !== e.target.name) {
+            setCustomStatusMessage({message: "Yakin? Tekan tombol lagi untuk lanjut dengan penghapusan data", error: 1, id_penghasilan: e.target.name});
+            return;
+        }
+        const payload = {
+            method: "POST",
+            headers: {"Content-Type": "application/json"},
+            body: JSON.stringify({earningsId: e.target.name}),
+            mode: "cors"
+        }
+        fetch(backendUrl + "/deleteearningsdata", payload)
+        .then(res => res.json())
+        .then(postResponse => setCustomStatusMessage({message: postResponse.msg, error: postResponse.success, id_penghasilan: -1}));
+    }
+
     const navigate = useNavigate();
 
     const goToHome = () => navigate("/admin_homepage");
@@ -49,6 +87,8 @@ function AdminListEarnings() {
                     <button className="btn home-btn" onClick={goToHome}>🏠 Menu Utama</button>
                 </div>
             </div>
+
+            <div className={errorMessageClass}>{errorMessage}</div>
 
             {/* Chart Section */}
             <div className="chart-container">
@@ -74,6 +114,8 @@ function AdminListEarnings() {
                         <th>Mineral</th>
                         <th>Tanggal</th>
                         <th>Kg Mineral</th>
+                        <th></th>
+                        <th></th>
                     </tr>
                 </thead>
                 <tbody>
@@ -84,6 +126,16 @@ function AdminListEarnings() {
                             <td>{data.nama_mineral}</td>
                             <td>{data.tanggal.substring(0, 10)}</td>
                             <td>{data.jumlah_penghasilan_kg}</td>
+                            <td><button
+                            className="changedatabutton"
+                            name={data.id_penghasilan}
+                            onClick={(e) => {changeData(e)}}
+                            >UBAH DATA</button></td>
+                            <td><button
+                            className="changedatabutton"
+                            name={data.id_penghasilan}
+                            onClick={(e) => {deleteData(e)}}
+                            >{parseInt(customStatusMessage.id_penghasilan) === parseInt(data.id_penghasilan) ? "YAKIN, HAPUS" : "HAPUS DATA"}</button></td>
                         </tr>
                     ))}
                 </tbody>

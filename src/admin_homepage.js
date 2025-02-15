@@ -52,7 +52,7 @@ function AdminHomepage() {
 
             {/* Dashboard Pendapatan */}
             <div style={{ backgroundColor: "white", padding: "20px", borderRadius: "8px", boxShadow: "0 2px 10px rgba(0, 0, 0, 0.1)" }}>
-                <h2 style={{ fontSize: "20px", marginBottom: "10px" }}>Pendapatan Bulanan</h2>
+                <h2 style={{ fontSize: "20px", marginBottom: "10px" }}>Pendapatan per Pekerja (Rp)</h2>
                 <ResponsiveContainer width="100%" height={300}>
                     <BarChart data={chartData}>
                         <XAxis dataKey="nama_pekerja" stroke="#8884d8" />

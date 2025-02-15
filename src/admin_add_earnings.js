@@ -5,7 +5,7 @@ import "./adminaddearnings.css";
 
 function AdminAddEarnings() {
     // const location = useLocation();
-    const [earningsData, setEarningsData] = useState({id_tambang: "", id_mineral: "", tanggal: "", jumlah_penghasilan_kg: ""});
+    const [earningsData, setEarningsData] = useState({id_tambang: "1", id_mineral: "1", tanggal: "", jumlah_penghasilan_kg: ""});
     //error 0 means use default error messages for password mismatch and passwords being under 6 characters long.
     //error 1 or 2 uses the message set in customStatusMessage. 1 displays red text and 2 displays green text.
     const [customStatusMessage, setCustomStatusMessage] = useState({message: "", error: 0});
